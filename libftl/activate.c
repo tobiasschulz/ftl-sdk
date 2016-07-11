@@ -51,7 +51,7 @@ ftl_status_t ftl_activate_stream(ftl_stream_configuration_t *stream_config) {
   struct addrinfo* p = 0;
 
   /* FIXME: dehardcode the port */
-  int ingest_port = 8084;
+  int ingest_port = 1900;
   char ingest_port_str[10];
   snprintf(ingest_port_str, 10, "%d", ingest_port);
   
@@ -193,10 +193,14 @@ ftl_status_t ftl_activate_stream(ftl_stream_configuration_t *stream_config) {
     return FTL_INTERNAL_ERROR;
   }
 
+  int port = -1;
+
   response_code = ftl_charon_read_response_code(buf);
   switch (response_code) {
     case FTL_CHARON_OK:
-      FTL_LOG(FTL_LOG_DEBUG, "ingest accepted our paramteres");
+      int ignore;
+      sprintf(buf, "%d Parameters accepted. Use UDP port %d\n", &ignore, &port);
+      FTL_LOG(FTL_LOG_DEBUG, "ingest accepted our paramteres, remote port will be %d", port);
       break;
     case FTL_CHARON_BAD_REQUEST:
       FTL_LOG(FTL_LOG_ERROR, "ingest responded bad request. Possible charon bug?");
@@ -224,6 +228,7 @@ ftl_status_t ftl_activate_stream(ftl_stream_configuration_t *stream_config) {
   // We're good to go, set the connected status to true, and save the socket
   config->connected = 1;
   config->ingest_socket = sock;
+  config->remote_port = port;
   return FTL_SUCCESS;
 
 buffer_overflow:

@@ -189,6 +189,8 @@ FTL_API void ftl_set_ingest_location(ftl_stream_configuration_t *stream_config, 
 
 FTL_API void ftl_set_authetication_key(ftl_stream_configuration_t *stream_config, uint32_t channel_id, const char * auth_key);
 
+FTL_API int ftl_get_remote_port(ftl_stream_configuration_t *stream_config);
+
 /*!
  * \ingroup ftl_public
  * \brief Creates an audio component object to add to a stream.

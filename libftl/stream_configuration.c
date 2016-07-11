@@ -81,6 +81,12 @@ void ftl_set_authetication_key(ftl_stream_configuration_t *stream_config, uint32
   strcpy(config->authetication_key, auth_key);
 }
 
+int ftl_get_remote_port(ftl_stream_configuration_t *stream_config) {
+  ftl_stream_configuration_private_t* config = (ftl_stream_configuration_private_t*)stream_config->private;
+
+  return config->remote_port;
+}
+
 // Safely frees all FTL member
 void ftl_destory_stream(ftl_stream_configuration_t** stream_config) {
   if (*stream_config == 0) {
