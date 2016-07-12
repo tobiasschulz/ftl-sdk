@@ -198,8 +198,7 @@ ftl_status_t ftl_activate_stream(ftl_stream_configuration_t *stream_config) {
   response_code = ftl_charon_read_response_code(buf);
   switch (response_code) {
     case FTL_CHARON_OK:
-      int ignore;
-      sprintf(buf, "%d Parameters accepted. Use UDP port %d\n", &ignore, &port);
+      sscanf(buf, "%*d %*s %*s %*s %*s %*s %d", &port);
       FTL_LOG(FTL_LOG_DEBUG, "ingest accepted our paramteres, remote port will be %d", port);
       break;
     case FTL_CHARON_BAD_REQUEST:
