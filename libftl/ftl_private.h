@@ -63,7 +63,7 @@
 #define MAX_STATUS_MESSAGE_QUEUED 10
 
 #ifndef _WIN32
-typdef SOCKET int
+typedef SOCKET int
 #endif
 
 /*status message queue*/
