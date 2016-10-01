@@ -27,8 +27,19 @@
 
 static ftl_logging_function_t ftl_log_cb;
 
+#ifndef _WIN32
+pthread_mutex_t lock;
+#endif
+
 void ftl_logging_init() {
   ftl_log_cb = 0;
+
+#ifndef _WIN32
+  if (pthread_mutex_init(&lock, NULL) != 0) {
+    printf("logging mutex init failed\n");
+  }
+#endif
+
 }
 
 void ftl_register_log_handler(ftl_logging_function_t log_func) {
@@ -37,6 +48,11 @@ void ftl_register_log_handler(ftl_logging_function_t log_func) {
 
 // Convert compiler macro to actual printf call to stderr
 void ftl_log_message(ftl_log_severity_t log_level, const char * file, int lineno, const char * fmt, ...) {
+
+#ifndef _WIN32
+  pthread_mutex_lock(&lock);
+#endif
+
     va_list args;
     char message[2048];
     va_start(args, fmt);
@@ -49,4 +65,9 @@ void ftl_log_message(ftl_log_severity_t log_level, const char * file, int lineno
     } else {
       fprintf(stderr, "[%s]:%d %s\n", file, lineno, message);
     }
+
+#ifndef _WIN32
+  pthread_mutex_unlock(&lock);
+#endif
+
 }

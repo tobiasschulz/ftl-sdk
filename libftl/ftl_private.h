@@ -37,6 +37,7 @@
 #include "win32\gettimeofday.h"
 #else
 #include <pthread.h>
+#include "posix/gettimeofday.h"
 #endif
 
 #ifndef _WIN32
@@ -44,6 +45,13 @@
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netdb.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+#include <unistd.h>
+typedef int BOOL;
+#define TRUE 1
+#define FALSE 0
+#define Sleep(n) usleep(n*1000)
 #endif
 
 #define MAX_INGEST_COMMAND_LEN 512
@@ -63,7 +71,7 @@
 #define MAX_STATUS_MESSAGE_QUEUED 10
 
 #ifndef _WIN32
-typdef SOCKET int
+typedef int SOCKET;
 #endif
 
 /*status message queue*/

@@ -5,6 +5,7 @@
 
 static BOOL _get_chan_id_and_key(const char *stream_key, uint32_t *chan_id, char *key);
 static int _lookup_ingest_ip(const char *ingest_location, char *ingest_ip);
+void ftl_register_log_handler(ftl_logging_function_t log_func);
 
 char error_message[1000];
 FTL_API const int FTL_VERSION_MAJOR = 0;
@@ -79,7 +80,8 @@ FTL_API ftl_status_t ftl_ingest_create(ftl_handle_t *ftl_handle, ftl_ingest_para
 #ifdef _WIN32
   if ((ftl_cfg->status_q.sem = CreateSemaphore(NULL, 0, MAX_STATUS_MESSAGE_QUEUED, NULL)) == NULL) {
 #else
-  ftl_cfg->status_q.sem
+  //ftl->status_q.sem
+  if (0) {
 #endif
 	  FTL_LOG(FTL_LOG_ERROR, "Failed to allocate create status queue semaphore\n");
 	  return FTL_MALLOC_FAILURE;
