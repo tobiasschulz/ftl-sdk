@@ -24,8 +24,10 @@ static float _media_get_queue_fullness(ftl_stream_configuration_private_t *ftl, 
 static int _lock_mutex(HANDLE mutex);
 static int _unlock_mutex(HANDLE mutex);
 #else
-static int _lock_mutex(pthread_mutex_t *mutex);
-static int _unlock_mutex(pthread_mutex_t *mutex);
+#define _lock_mutex(a) __lock_mutex(&(a))
+#define _unlock_mutex(a) __unlock_mutex(&(a))
+static int __lock_mutex(pthread_mutex_t *mutex);
+static int __unlock_mutex(pthread_mutex_t *mutex);
 #endif
 
 void clear_stats(media_stats_t *stats);
@@ -189,7 +191,7 @@ void clear_stats(media_stats_t *stats) {
 static int _lock_mutex(HANDLE mutex) {
 	WaitForSingleObject(mutex, INFINITE);
 #else
-static int _lock_mutex(pthread_mutex_t *mutex) {
+static int __lock_mutex(pthread_mutex_t *mutex) {
 	pthread_mutex_lock(mutex);
 #endif
 	return 0;
@@ -199,7 +201,7 @@ static int _lock_mutex(pthread_mutex_t *mutex) {
 static int _unlock_mutex(HANDLE mutex) {
 	ReleaseMutex(mutex);
 #else
-static int _unlock_mutex(pthread_mutex_t *mutex) {
+static int __unlock_mutex(pthread_mutex_t *mutex) {
 	pthread_mutex_unlock(mutex);
 #endif
 
@@ -488,7 +490,9 @@ static int _media_send_packet(ftl_stream_configuration_private_t *ftl, ftl_media
 		FTL_LOG(FTL_LOG_INFO, "ERROR: No packets in ring buffer (%d == %d)\n", mc->xmit_seq_num, mc->seq_num);
 	}
 
+#ifdef _WIN32
 	_lock_mutex(slot->mutex);
+#endif
 
 	tx_len = _media_send_slot(ftl, slot);
 
@@ -517,8 +521,10 @@ static int _media_send_packet(ftl_stream_configuration_private_t *ftl, ftl_media
 	xmit_delay_total += xmit_delay_delta;
 	xmit_delay_samples++;
 */
+#ifdef _WIN32
 	_unlock_mutex(slot->mutex);
-	
+#endif
+
 	return tx_len;
 }
 
