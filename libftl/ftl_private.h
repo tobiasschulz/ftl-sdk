@@ -99,7 +99,7 @@ typedef struct {
 	HANDLE mutex;
 	HANDLE sem;
 #else
-	pthread_mutex_t* mutex;
+	pthread_mutex_t mutex;
 #endif
 }status_queue_t;
 
@@ -182,7 +182,7 @@ typedef struct {
 #ifdef _WIN32
 	HANDLE mutex;
 #else
-	pthread_mutex_t* mutex;
+	pthread_mutex_t mutex;
 #endif
 	int assigned_port;
 	BOOL recv_thread_running;
