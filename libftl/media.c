@@ -380,11 +380,11 @@ static int _media_make_video_rtp_packet(ftl_stream_configuration_private_t *ftl,
         *out2 = rtp_header;
         out2++;
         
-		rtp_header = htonl(mc->ssrc);
+        rtp_header = htonl(mc->ssrc);
         *out2 = rtp_header;
         out2++;
 		
-		out = (uint8_t*)out2;
+        out = (uint8_t*)out2;
 
 	mc->seq_num++;
 
@@ -438,11 +438,11 @@ static int _media_make_audio_rtp_packet(ftl_stream_configuration_private_t *ftl,
         *out2 = rtp_header;
         out2++;
         
-		rtp_header = htonl(mc->ssrc);
+        rtp_header = htonl(mc->ssrc);
         *out2 = rtp_header;
         out2++;
         
-		out = (uint8_t*)out2;
+        out = (uint8_t*)out2;
 
 	mc->seq_num++;
 	mc->timestamp += mc->timestamp_step;
