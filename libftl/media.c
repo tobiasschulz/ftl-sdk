@@ -322,8 +322,10 @@ int media_send_video(ftl_stream_configuration_private_t *ftl, uint8_t *data, int
 
 		_unlock_mutex(slot->mutex);
 
-		LONG prev_cnt;
+		long prev_cnt;
+#ifdef _WIN32
 		ReleaseSemaphore(mc->pkt_ready, 1, &prev_cnt);
+#endif
 		mc->stats.packets_queued++;
 		mc->stats.bytes_queued += pkt_len;
 	}
