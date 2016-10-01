@@ -18,7 +18,9 @@ if (WIN32)
 							libftl/win32/gettimeofday.h)
 else()
   set(FTL_PLATFORM_FILES ftl_app/posix/ctrlc_handler.c)
-  set(FTLSDK_PLATFORM_FILES libftl/posix/socket.c)
+  set(FTLSDK_PLATFORM_FILES libftl/posix/socket.c
+							libftl/posix/gettimeofday.c
+							libftl/posix/gettimeofday.h)
 endif()
 
 add_library(ftl SHARED libftl/hmac/hmac.c
