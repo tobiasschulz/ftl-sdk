@@ -16,6 +16,14 @@ static int _media_set_marker_bit(ftl_media_component_common_t *mc, uint8_t *in);
 static int _media_send_packet(ftl_stream_configuration_private_t *ftl, uint32_t ssrc, uint16_t sn, int len);
 uint8_t* _media_get_empty_packet(ftl_stream_configuration_private_t *ftl, uint32_t ssrc, uint16_t sn, int *buf_len);
 
+#ifndef _WIN32
+#include <sys/time.h>
+#define INVALID_SOCKET (int)0
+#define SOCKET_ERROR (int)-1
+typedef void *PVOID;
+typedef void *HANDLE;
+#endif
+
 ftl_status_t media_init(ftl_stream_configuration_private_t *ftl) {
 
 	ftl_media_config_t *media = &ftl->media;
@@ -364,11 +372,17 @@ static int _media_make_video_rtp_packet(ftl_stream_configuration_private_t *ftl,
 	uint32_t rtp_header;
 
 	rtp_header = htonl((2 << 30) | (mc->payload_type << 16) | mc->seq_num);
-	*((uint32_t*)out)++ = rtp_header;
-	rtp_header = htonl(mc->timestamp);
-	*((uint32_t*)out)++ = rtp_header;
-	rtp_header = htonl(mc->ssrc);
-	*((uint32_t*)out)++ = rtp_header;
+        uint32_t* out2 = (uint32_t*)out;
+        out2++;
+        *out2 = rtp_header;
+        rtp_header = htonl(mc->timestamp);
+        out2 = (uint32_t*)out;
+        out2++;
+        *out2 = rtp_header;
+        rtp_header = htonl(mc->ssrc);
+        out2 = (uint32_t*)out;
+        out2++;
+        *out2 = rtp_header;
 
 	mc->seq_num++;
 
@@ -413,12 +427,18 @@ static int _media_make_audio_rtp_packet(ftl_stream_configuration_private_t *ftl,
 	ftl_audio_component_t *audio = &ftl->audio;
 	ftl_media_component_common_t *mc = &audio->media_component;
 
-	rtp_header = htonl((2 << 30) | (1 << 23) | (mc->payload_type << 16) | mc->seq_num);
-	*((uint32_t*)out)++ = rtp_header;
-	rtp_header = htonl(mc->timestamp);
-	*((uint32_t*)out)++ = rtp_header;
-	rtp_header = htonl(mc->ssrc);
-	*((uint32_t*)out)++ = rtp_header;
+        rtp_header = htonl((2 << 30) | (1 << 23) | (mc->payload_type << 16) | mc->seq_num);
+        uint32_t* out2 = (uint32_t*)out;
+        out2++;
+        *out2 = rtp_header;
+        rtp_header = htonl(mc->timestamp);
+        out2 = (uint32_t*)out;
+        out2++;
+        *out2 = rtp_header;
+        rtp_header = htonl(mc->ssrc);
+        out2 = (uint32_t*)out;
+        out2++;
+        *out2 = rtp_header;
 
 	mc->seq_num++;
 	mc->timestamp += mc->timestamp_step;
@@ -479,7 +499,7 @@ static void *recv_thread(void *data)
 #ifdef _WIN32
 		ret = recv(media->media_socket, buf, MAX_PACKET_BUFFER, 0);
 #else
-		ret = recv(stream->sb_socket, buf, MAX_PACKET_MTU, 0);
+		ret = recv(media->media_socket, buf, MAX_PACKET_BUFFER, 0);
 #endif
 		if (ret <= 0) {
 			continue;

@@ -25,6 +25,14 @@
 #define __FTL_INTERNAL
 #include "ftl.h"
 
+#ifndef _WIN32
+#include <string.h>
+#include <errno.h>
+#include <sys/time.h>
+#include <sys/types.h>
+#include <sys/socket.h>
+#endif
+
 #include <unistd.h>
 
 void ftl_init_sockets() {
