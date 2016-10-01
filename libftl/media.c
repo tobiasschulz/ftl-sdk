@@ -111,7 +111,8 @@ ftl_status_t media_init(ftl_stream_configuration_private_t *ftl) {
 #ifdef _WIN32
 	if ((comp->pkt_ready = CreateSemaphore(NULL, 0, 1000000, NULL)) == NULL) {
 #else
-	comp->pkt_ready
+	//comp->pkt_ready
+	if (0) {
 #endif
 		return FTL_MALLOC_FAILURE;
 	}
@@ -184,19 +185,21 @@ void clear_stats(media_stats_t *stats) {
 	stats->bytes_queued = 0;
 }
 
-static int _lock_mutex(HANDLE mutex) {
 #ifdef _WIN32
+static int _lock_mutex(HANDLE mutex) {
 	WaitForSingleObject(mutex, INFINITE);
 #else
+static int _lock_mutex(pthread_mutex_t *mutex) {
 	pthread_mutex_lock(mutex);
 #endif
 	return 0;
 }
 
-static int _unlock_mutex(HANDLE mutex) {
 #ifdef _WIN32
+static int _unlock_mutex(HANDLE mutex) {
 	ReleaseMutex(mutex);
 #else
+static int _unlock_mutex(pthread_mutex_t *mutex) {
 	pthread_mutex_unlock(mutex);
 #endif
 
@@ -791,7 +794,7 @@ static void *send_thread(void *data)
 #ifdef _WIN32
 		WaitForSingleObject(video->pkt_ready, INFINITE);
 #else
-		sem_pend
+		// sem_pend
 #endif
 
 		if (!media->send_thread_running) {

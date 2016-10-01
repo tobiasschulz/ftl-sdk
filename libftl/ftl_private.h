@@ -99,7 +99,7 @@ typedef struct {
 	HANDLE mutex;
 	HANDLE sem;
 #else
-	pthread_mutex_t mutex;
+	pthread_mutex_t* mutex;
 #endif
 }status_queue_t;
 
@@ -119,7 +119,7 @@ typedef struct {
 #ifdef _WIN32
 	HANDLE mutex;
 #else
-	pthread_mutex_t mutex;
+	pthread_mutex_t* mutex;
 #endif
 }nack_slot_t;
 
@@ -153,7 +153,7 @@ typedef struct {
 #ifdef _WIN32
 	HANDLE pkt_ready;
 #else
-	send_frame_sem;
+	//send_frame_sem;
 #endif
 	struct timeval stats_tv;
 	media_stats_t stats;
@@ -182,7 +182,7 @@ typedef struct {
 #ifdef _WIN32
 	HANDLE mutex;
 #else
-	pthread_mutex_t mutex;
+	pthread_mutex_t* mutex;
 #endif
 	int assigned_port;
 	BOOL recv_thread_running;
@@ -193,7 +193,7 @@ typedef struct {
 	HANDLE send_thread_handle;
 	DWORD send_thread_id;
 #else
-	pthread_t send_thread;
+	pthread_t recv_thread;
 	pthread_t send_thread;
 #endif
 	int max_mtu;
@@ -293,7 +293,7 @@ ftl_status_t _ingest_disconnect(ftl_stream_configuration_private_t *stream_confi
 
 ftl_status_t media_init(ftl_stream_configuration_private_t *ftl);
 ftl_status_t media_destroy(ftl_stream_configuration_private_t *ftl);
-ftl_status_t media_send_video(ftl_stream_configuration_private_t *ftl, uint8_t *data, int32_t len, int end_of_frame);
+int media_send_video(ftl_stream_configuration_private_t *ftl, uint8_t *data, int32_t len, int end_of_frame);
 ftl_status_t media_send_audio(ftl_stream_configuration_private_t *ftl, uint8_t *data, int32_t len);
 
 #if defined(_MSC_VER) && _MSC_VER < 1900
