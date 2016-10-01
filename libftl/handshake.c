@@ -311,7 +311,7 @@ static void *connection_status_thread(void *data)
 
 	while (ftl->connected) {
 
-  	FTL_LOG(FTL_LOG_ERROR, "ftl->connected: %d\n", ftl->connected);
+  	FTL_LOG(FTL_LOG_INFO, "ftl->connected: %d\n", ftl->connected);
 
 		Sleep(500);
 
