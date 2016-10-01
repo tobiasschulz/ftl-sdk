@@ -58,6 +58,7 @@ int ftl_set_socket_recv_timeout(SOCKET socket, int ms_timeout){
   struct timeval tv;
   tv.tv_sec  = ms_timeout / 1000;
   tv.tv_usec = (ms_timeout % 1000) * 1000;
+  FTL_LOG(FTL_LOG_INFO, "ftl_set_socket_recv_timeout: ms_timeout = %d, tv.tv_sec = %d, tv.tv_usec = %d", ms_timeout, tv.tv_sec, tv.tv_usec);
 	return setsockopt(socket, SOL_SOCKET, SO_RCVTIMEO, &tv, sizeof(struct timeval));
 #endif
 }
@@ -69,6 +70,7 @@ int ftl_set_socket_send_timeout(SOCKET socket, int ms_timeout){
   struct timeval tv;
   tv.tv_sec  = ms_timeout / 1000;
   tv.tv_usec = (ms_timeout % 1000) * 1000;
+  FTL_LOG(FTL_LOG_INFO, "ftl_set_socket_recv_timeout: ms_timeout = %d, tv.tv_sec = %d, tv.tv_usec = %d", ms_timeout, tv.tv_sec, tv.tv_usec);
 	return setsockopt(socket, SOL_SOCKET, SO_SNDTIMEO, &tv, sizeof(struct timeval));
 #endif
 }
