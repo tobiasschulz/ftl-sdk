@@ -373,16 +373,15 @@ static int _media_make_video_rtp_packet(ftl_stream_configuration_private_t *ftl,
 
 	rtp_header = htonl((2 << 30) | (mc->payload_type << 16) | mc->seq_num);
         uint32_t* out2 = (uint32_t*)out;
-        out2++;
         *out2 = rtp_header;
+        out2++;
         rtp_header = htonl(mc->timestamp);
-        out2 = (uint32_t*)out;
-        out2++;
         *out2 = rtp_header;
+        out2++;
         rtp_header = htonl(mc->ssrc);
-        out2 = (uint32_t*)out;
-        out2++;
         *out2 = rtp_header;
+        out2++;
+		out = (uint8_t*)out2;
 
 	mc->seq_num++;
 
@@ -429,16 +428,15 @@ static int _media_make_audio_rtp_packet(ftl_stream_configuration_private_t *ftl,
 
         rtp_header = htonl((2 << 30) | (1 << 23) | (mc->payload_type << 16) | mc->seq_num);
         uint32_t* out2 = (uint32_t*)out;
-        out2++;
         *out2 = rtp_header;
+        out2++;
         rtp_header = htonl(mc->timestamp);
-        out2 = (uint32_t*)out;
-        out2++;
         *out2 = rtp_header;
+        out2++;
         rtp_header = htonl(mc->ssrc);
-        out2 = (uint32_t*)out;
-        out2++;
         *out2 = rtp_header;
+        out2++;
+		out = (uint8_t*)out2;
 
 	mc->seq_num++;
 	mc->timestamp += mc->timestamp_step;
