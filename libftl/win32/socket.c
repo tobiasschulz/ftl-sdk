@@ -52,11 +52,25 @@ char * ftl_get_socket_error() {
 }
 
 int ftl_set_socket_recv_timeout(SOCKET socket, int ms_timeout){
+#ifdef _WIN32
 	return setsockopt(socket, SOL_SOCKET, SO_RCVTIMEO, (char*)&ms_timeout, sizeof(ms_timeout));
+#else
+  struct timeval tv;
+  tv.tv_sec  = ms_timeout / 1000;
+  tv.tv_usec = (ms_timeout % 1000) * 1000;
+	return setsockopt(socket, SOL_SOCKET, SO_RCVTIMEO, &tv, sizeof(struct timeval));
+#endif
 }
 
 int ftl_set_socket_send_timeout(SOCKET socket, int ms_timeout){
+#ifdef _WIN32
 	return setsockopt(socket, SOL_SOCKET, SO_SNDTIMEO, (char*)&ms_timeout, sizeof(ms_timeout));
+#else
+  struct timeval tv;
+  tv.tv_sec  = ms_timeout / 1000;
+  tv.tv_usec = (ms_timeout % 1000) * 1000;
+	return setsockopt(socket, SOL_SOCKET, SO_SNDTIMEO, &tv, sizeof(struct timeval));
+#endif
 }
 
 int ftl_set_socket_enable_keepalive(SOCKET socket){

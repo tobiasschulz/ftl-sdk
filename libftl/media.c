@@ -35,7 +35,7 @@ ftl_status_t media_init(ftl_stream_configuration_private_t *ftl) {
 	{
 		FTL_LOG(FTL_LOG_ERROR, "Could not create socket : %s", ftl_get_socket_error());
 	}
-	FTL_LOG(FTL_LOG_INFO, "Socket created\n");
+	FTL_LOG(FTL_LOG_INFO, "Socket created");
 
 	if ((server = gethostbyname(ftl->ingest_ip)) == NULL) {
 		FTL_LOG(FTL_LOG_ERROR, "No such host as %s\n", ftl->ingest_ip);

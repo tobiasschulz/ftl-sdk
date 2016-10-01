@@ -189,7 +189,7 @@ ftl_status_t _ingest_connect(ftl_stream_configuration_private_t *stream_config) 
 	  stream_config->media.assigned_port = port;
   }
 
-  FTL_LOG(FTL_LOG_INFO, "Successfully connected to ingest.  Media will be sent to port %d\n", stream_config->media.assigned_port);
+  FTL_LOG(FTL_LOG_INFO, "Successfully connected to ingest.  Media will be sent to port %d", stream_config->media.assigned_port);
 
   stream_config->connected = 1;
   

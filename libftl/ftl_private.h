@@ -87,7 +87,7 @@ typedef struct {
 	HANDLE mutex;
 	HANDLE sem;
 #else
-	pthread_mutex_t* mutex;
+	pthread_mutex_t mutex;
 #endif
 }status_queue_t;
 
@@ -104,7 +104,7 @@ typedef struct {
 #ifdef _WIN32
 	HANDLE mutex;
 #else
-	pthread_mutex_t* mutex;
+	pthread_mutex_t mutex;
 #endif
 }nack_slot_t;
 
