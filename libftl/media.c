@@ -113,7 +113,7 @@ ftl_status_t media_init(ftl_stream_configuration_private_t *ftl) {
 #ifdef _WIN32
 	if ((comp->pkt_ready = CreateSemaphore(NULL, 0, 1000000, NULL)) == NULL) {
 #else
-	if (pthread_mutex_init(&comp->pkt_ready, NULL) != 0) {
+	if (sem_init(&comp->pkt_ready, 0, 1000000) != 0) {
 #endif
 		return FTL_MALLOC_FAILURE;
 	}
@@ -326,6 +326,8 @@ int media_send_video(ftl_stream_configuration_private_t *ftl, uint8_t *data, int
 		long prev_cnt;
 #ifdef _WIN32
 		ReleaseSemaphore(mc->pkt_ready, 1, &prev_cnt);
+#else
+		sem_post(&mc->pkt_ready);
 #endif
 		mc->stats.packets_queued++;
 		mc->stats.bytes_queued += pkt_len;
@@ -489,9 +491,7 @@ static int _media_send_packet(ftl_stream_configuration_private_t *ftl, ftl_media
 		FTL_LOG(FTL_LOG_INFO, "ERROR: No packets in ring buffer (%d == %d)\n", mc->xmit_seq_num, mc->seq_num);
 	}
 
-//#ifdef _WIN32
 	_lock_mutex(slot->mutex);
-//#endif
 
 	tx_len = _media_send_slot(ftl, slot);
 
@@ -521,9 +521,7 @@ static int _media_send_packet(ftl_stream_configuration_private_t *ftl, ftl_media
 	xmit_delay_samples++;
 */
 
-//#ifdef _WIN32
 	_unlock_mutex(slot->mutex);
-//#endif
 
 	return tx_len;
 }
@@ -802,7 +800,7 @@ static void *send_thread(void *data)
 #ifdef _WIN32
 		WaitForSingleObject(video->pkt_ready, INFINITE);
 #else
-		pthread_mutex_lock(&video->pkt_ready);
+		sem_wait(&video->pkt_ready);
 #endif
 
 		if (!media->send_thread_running) {

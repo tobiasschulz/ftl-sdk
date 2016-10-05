@@ -37,6 +37,7 @@
 #include "win32\gettimeofday.h"
 #else
 #include <pthread.h>
+#include <semaphore.h>
 #include "posix/gettimeofday.h"
 #endif
 
@@ -155,7 +156,7 @@ typedef struct {
 #ifdef _WIN32
 	HANDLE pkt_ready;
 #else
-	pthread_mutex_t pkt_ready;
+	sem_t pkt_ready;
 #endif
 	struct timeval stats_tv;
 	media_stats_t stats;
