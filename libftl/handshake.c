@@ -288,8 +288,6 @@ static ftl_response_code_t _ftl_send_command(ftl_stream_configuration_private_t 
     goto cleanup;
   }
 
-  FTL_LOG(FTL_LOG_INFO, "_ftl_send_command: %s", buf);
-
   send(ftl_cfg->ingest_socket, buf, len, 0);
 
   if (need_response) {
@@ -337,7 +335,6 @@ static void *connection_status_thread(void *data)
 			ftl->connected = 0;
 			ftl->ready_for_media = 0;
 
-			FTL_LOG(FTL_LOG_ERROR, "ingest connection has dropped: %s", ftl_get_socket_error());
 			if ((status_code = _ingest_disconnect(ftl)) != FTL_SUCCESS) {
 				FTL_LOG(FTL_LOG_ERROR, "Disconnect failed with error %d\n", status_code);
 			}
