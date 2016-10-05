@@ -28,6 +28,7 @@
 #include <unistd.h>
 #include <sys/socket.h>
 #include <errno.h>
+#include <string.h>
 
 void ftl_init_sockets() {
   //BSD sockets are smarter and don't need silly init

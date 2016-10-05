@@ -35,7 +35,7 @@ ftl_status_t media_init(ftl_stream_configuration_private_t *ftl) {
 	ftl_media_config_t *media = &ftl->media;
 	struct hostent *server = NULL;
 	ftl_status_t status = FTL_SUCCESS;
-	int idx;
+	unsigned long idx;
 
 #ifdef _WIN32
 	if ((media->mutex = CreateMutex(NULL, FALSE, NULL)) == NULL) {
@@ -50,7 +50,7 @@ ftl_status_t media_init(ftl_stream_configuration_private_t *ftl) {
 	{
 		FTL_LOG(FTL_LOG_ERROR, "Could not create socket : %s", ftl_get_socket_error());
 	}
-	FTL_LOG(FTL_LOG_INFO, "Socket created\n");
+	FTL_LOG(FTL_LOG_INFO, "Socket created");
 
 	if ((server = gethostbyname(ftl->ingest_ip)) == NULL) {
 		FTL_LOG(FTL_LOG_ERROR, "No such host as %s\n", ftl->ingest_ip);
@@ -458,7 +458,7 @@ static int _media_send_packet(ftl_stream_configuration_private_t *ftl, ftl_media
 	nack_slot_t *slot = mc->nack_slots[mc->xmit_seq_num % NACK_RB_SIZE];
 
 	if (mc->xmit_seq_num == mc->seq_num) {
-		FTL_LOG(FTL_LOG_INFO, "ERROR: No packets in ring buffer (%d == %d)\n", mc->xmit_seq_num, mc->seq_num);
+		FTL_LOG(FTL_LOG_INFO, "ERROR: No packets in ring buffer (%d == %d)", mc->xmit_seq_num, mc->seq_num);
 	}
 
 	LOCK_MUTEX(slot->mutex);
@@ -645,7 +645,7 @@ static void *recv_thread(void *data)
 
 	if ((buf = (unsigned char*)malloc(MAX_PACKET_BUFFER)) == NULL) {
 		FTL_LOG(FTL_LOG_ERROR, "Failed to allocate recv buffer\n");
-		return -1;
+		return (void*)-1;
 	}
 
 #if 0

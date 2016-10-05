@@ -5,6 +5,7 @@
 
 static BOOL _get_chan_id_and_key(const char *stream_key, uint32_t *chan_id, char *key);
 static int _lookup_ingest_ip(const char *ingest_location, char *ingest_ip);
+void ftl_register_log_handler(ftl_logging_function_t log_func);
 
 char error_message[1000];
 FTL_API const int FTL_VERSION_MAJOR = 0;

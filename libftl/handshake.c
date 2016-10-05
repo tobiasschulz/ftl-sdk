@@ -25,6 +25,7 @@
 #define __FTL_INTERNAL
 #include "ftl.h"
 #include "ftl_private.h"
+#include <sys/time.h>
 #include <stdarg.h>
 
 #ifdef _WIN32
@@ -190,7 +191,7 @@ ftl_status_t _ingest_connect(ftl_stream_configuration_private_t *stream_config) 
 	  stream_config->media.assigned_port = port;
   }
 
-  FTL_LOG(FTL_LOG_INFO, "Successfully connected to ingest.  Media will be sent to port %d\n", stream_config->media.assigned_port);
+  FTL_LOG(FTL_LOG_INFO, "Successfully connected to ingest.  Media will be sent to port %d", stream_config->media.assigned_port);
 
   stream_config->connected = 1;
   
@@ -221,15 +222,27 @@ ftl_status_t _ingest_disconnect(ftl_stream_configuration_private_t *stream_confi
 
 	if (stream_config->connected) {
 		stream_config->connected = 0;
-		/*TODO: we dont need a key to disconnect from a tcp connection*/
-		if (!ftl_get_hmac(stream_config->ingest_socket, stream_config->key, stream_config->hmacBuffer)) {
-			FTL_LOG(FTL_LOG_ERROR, "could not get a signed HMAC!");
-			response_code = FTL_INTERNAL_ERROR;
-		}
 
-		if ((response_code = _ftl_send_command(stream_config, TRUE, response, sizeof(response), "DISCONNECT %d $%s", stream_config->channel_id, stream_config->hmacBuffer)) != FTL_INGEST_RESP_OK) {
-			FTL_LOG(FTL_LOG_ERROR, "ingest did not accept our authkey. Returned response code was %d\n", response_code);
-			response_code = response_code;
+		//TODO: once light saber releases this legancy disconnect can go away
+		if (stream_config->media.assigned_port == FTL_UDP_MEDIA_PORT) {
+			FTL_LOG(FTL_LOG_INFO, "Legacy disconnect\n");
+			/*TODO: we dont need a key to disconnect from a tcp connection*/
+			if (!ftl_get_hmac(stream_config->ingest_socket, stream_config->key, stream_config->hmacBuffer)) {
+				FTL_LOG(FTL_LOG_ERROR, "could not get a signed HMAC!");
+				response_code = FTL_INTERNAL_ERROR;
+			}
+
+			if ((response_code = _ftl_send_command(stream_config, TRUE, response, sizeof(response), "DISCONNECT %d $%s", stream_config->channel_id, stream_config->hmacBuffer)) != FTL_INGEST_RESP_OK) {
+				FTL_LOG(FTL_LOG_ERROR, "ingest did not accept our authkey. Returned response code was %d\n", response_code);
+				response_code = response_code;
+			}
+		}
+		else {
+			FTL_LOG(FTL_LOG_INFO, "light-saber disconnect\n");
+			if ((response_code = _ftl_send_command(stream_config, TRUE, response, sizeof(response), "DISCONNECT %d", stream_config->channel_id)) != FTL_INGEST_RESP_OK) {
+				FTL_LOG(FTL_LOG_ERROR, "Ingest Disconnect failed with %d\n", response_code);
+				response_code = response_code;
+			}
 		}
 	}
 
@@ -322,7 +335,6 @@ static void *connection_status_thread(void *data)
 			ftl->connected = 0;
 			ftl->ready_for_media = 0;
 
-			FTL_LOG(FTL_LOG_ERROR, "ingest connection has dropped: %s\n", ftl_get_socket_error());
 			if ((status_code = _ingest_disconnect(ftl)) != FTL_SUCCESS) {
 				FTL_LOG(FTL_LOG_ERROR, "Disconnect failed with error %d\n", status_code);
 			}
