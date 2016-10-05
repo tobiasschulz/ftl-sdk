@@ -153,7 +153,7 @@ typedef struct {
 #ifdef _WIN32
 	HANDLE pkt_ready;
 #else
-	//send_frame_sem;
+	pthread_mutex_t pkt_ready;
 #endif
 	struct timeval stats_tv;
 	media_stats_t stats;
