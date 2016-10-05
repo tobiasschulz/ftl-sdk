@@ -1,15 +1,6 @@
 
 #define __FTL_INTERNAL
 #include "ftl.h"
-#include "ftl_private.h"
-
-#ifndef _WIN32
-#include <string.h>
-#include <errno.h>
-#include <sys/time.h>
-#include <sys/types.h>
-#include <sys/socket.h>
-#endif
 
 #include <unistd.h>
 #include <sys/socket.h>
@@ -54,10 +45,5 @@ int ftl_set_socket_send_timeout(int socket, int ms_timeout){
 int ftl_set_socket_enable_keepalive(int socket){
   int keep_alive = 1;
   return setsockopt(socket, SOL_SOCKET, SO_KEEPALIVE, (char*)&keep_alive, sizeof(keep_alive));
-}
-
-int ftl_set_socket_send_buf(int socket, int buffer_space) {
-	int keep_alive = 1;
-	return setsockopt(socket, SOL_SOCKET, SO_SNDBUF, (char*)&buffer_space, sizeof(buffer_space));
 }
 
