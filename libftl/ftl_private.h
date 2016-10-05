@@ -52,7 +52,6 @@
 typedef int BOOL;
 #define TRUE 1
 #define FALSE 0
-#define Sleep(n) usleep(n*1000)
 #endif
 
 #define MAX_INGEST_COMMAND_LEN 512

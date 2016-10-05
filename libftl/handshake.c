@@ -336,7 +336,7 @@ static void *connection_status_thread(void *data)
 			ftl->connected = 0;
 			ftl->ready_for_media = 0;
 
-			FTL_LOG(FTL_LOG_ERROR, "ingest connection has dropped: %s\n", ftl_get_socket_error());
+			FTL_LOG(FTL_LOG_ERROR, "ingest connection has dropped: %s %d\n", ftl_get_socket_error(), errno);
 			if ((status_code = _ingest_disconnect(ftl)) != FTL_SUCCESS) {
 				FTL_LOG(FTL_LOG_ERROR, "Disconnect failed with error %d\n", status_code);
 			}

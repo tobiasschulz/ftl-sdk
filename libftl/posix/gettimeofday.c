@@ -1,4 +1,5 @@
 #include <sys/time.h>
+#include <time.h>
 
 int timeval_subtract(struct timeval *result, struct timeval *x, struct timeval *y)
 {
@@ -30,4 +31,16 @@ float timeval_to_ms(struct timeval *tv) {
 	usec = tv->tv_usec;
 
 	return sec * 1000 + usec / 1000;
+}
+
+int Sleep(unsigned long milliseconds) {
+	struct timespec req = {0};
+	time_t sec = (int)(milliseconds / 1000);
+	milliseconds = milliseconds - (sec * 1000);
+	req.tv_sec = sec;
+	req.tv_nsec = milliseconds * 1000000L;
+	while (nanosleep(&req, &req) == -1) {
+		continue;
+	}
+	return 1;
 }
