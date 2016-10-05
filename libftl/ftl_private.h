@@ -101,6 +101,7 @@ typedef struct {
 	HANDLE sem;
 #else
 	pthread_mutex_t mutex;
+	sem_t sem;
 #endif
 }status_queue_t;
 
