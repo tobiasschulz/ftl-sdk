@@ -30,14 +30,6 @@ static float _media_get_queue_fullness(ftl_stream_configuration_private_t *ftl, 
 
 void clear_stats(media_stats_t *stats);
 
-#ifndef _WIN32
-#include <sys/time.h>
-#define INVALID_SOCKET (int)0
-#define SOCKET_ERROR (int)-1
-typedef void *PVOID;
-typedef void *HANDLE;
-#endif
-
 ftl_status_t media_init(ftl_stream_configuration_private_t *ftl) {
 
 	ftl_media_config_t *media = &ftl->media;
