@@ -387,7 +387,6 @@ ftl_status_t _log_response(int response_code){
       FTL_LOG(FTL_LOG_ERROR, "invalid stream key or channel id");
       return FTL_STREAM_REJECTED;
   }
-      FTL_LOG(FTL_LOG_ERROR, "FTL_UNKNOWN_ERROR_CODE");
 
 	return FTL_UNKNOWN_ERROR_CODE;
 }
