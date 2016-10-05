@@ -113,7 +113,7 @@ ftl_status_t media_init(ftl_stream_configuration_private_t *ftl) {
 #ifdef _WIN32
 	if ((comp->pkt_ready = CreateSemaphore(NULL, 0, 1000000, NULL)) == NULL) {
 #else
-	if (sem_init(&comp->pkt_ready, 0, 1000000) != 0) {
+	if (sem_init(&comp->pkt_ready, 0, 0) != 0) {
 #endif
 		return FTL_MALLOC_FAILURE;
 	}

@@ -288,6 +288,8 @@ static ftl_response_code_t _ftl_send_command(ftl_stream_configuration_private_t 
     goto cleanup;
   }
 
+  FTL_LOG(FTL_LOG_INFO, "_ftl_send_command: %s", buf);
+
   send(ftl_cfg->ingest_socket, buf, len, 0);
 
   if (need_response) {
@@ -329,7 +331,7 @@ static void *connection_status_thread(void *data)
 
 {struct timeval tv;struct timezone tz;struct tm *tm; gettimeofday(&tv,&tz);tm=localtime(&tv.tv_sec); printf("StartTime: %d:%02d:%02d %d \n", tm->tm_hour, tm->tm_min, tm->tm_sec, tv.tv_usec);}
 
-		Sleep(5000);
+		Sleep(5000*99);
 
 {struct timeval tv;struct timezone tz;struct tm *tm; gettimeofday(&tv,&tz);tm=localtime(&tv.tv_sec); printf("StartTime after sleep: %d:%02d:%02d %d \n", tm->tm_hour, tm->tm_min, tm->tm_sec, tv.tv_usec);}
 
@@ -394,6 +396,7 @@ ftl_status_t _log_response(int response_code){
       FTL_LOG(FTL_LOG_ERROR, "invalid stream key or channel id");
       return FTL_STREAM_REJECTED;
   }
+      FTL_LOG(FTL_LOG_ERROR, "FTL_UNKNOWN_ERROR_CODE");
 
 	return FTL_UNKNOWN_ERROR_CODE;
 }
