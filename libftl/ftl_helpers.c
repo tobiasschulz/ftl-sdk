@@ -255,12 +255,9 @@ int dequeue_status_msg(ftl_stream_configuration_private_t *ftl, ftl_status_msg_t
 		free(elmt);
 		ftl->status_q.count--;
 		retval = 0;
-		FTL_LOG(FTL_LOG_ERROR, "ERROR: dequeue_status_msg had SOME messages");
 	}
 	else {
-#ifndef _WIN32
 		FTL_LOG(FTL_LOG_ERROR, "ERROR: dequeue_status_msg had no messages");
-#endif
 	}
 
 #ifdef _WIN32
