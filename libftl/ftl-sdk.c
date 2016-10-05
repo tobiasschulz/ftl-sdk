@@ -81,7 +81,7 @@ FTL_API ftl_status_t ftl_ingest_create(ftl_handle_t *ftl_handle, ftl_ingest_para
 #ifdef _WIN32
   if ((ftl->status_q.sem = CreateSemaphore(NULL, 0, MAX_STATUS_MESSAGE_QUEUED, NULL)) == NULL) {
 #else
-  if (sem_init(&ftl->status_q.sem, 0, MAX_STATUS_MESSAGE_QUEUED)) {
+  if (sem_init(&ftl->status_q.sem, 0, 0)) {
 #endif
 	  FTL_LOG(FTL_LOG_ERROR, "Failed to allocate create status queue semaphore\n");
 	  return FTL_MALLOC_FAILURE;

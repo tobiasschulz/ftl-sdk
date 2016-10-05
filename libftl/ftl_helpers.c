@@ -221,7 +221,11 @@ int enqueue_status_msg(ftl_stream_configuration_private_t *ftl, ftl_status_msg_t
 #ifdef _WIN32
 		ReleaseSemaphore(ftl->status_q.sem, 1, NULL);
 #else
-		sem_post(&ftl->status_q.sem);
+		int val;
+		sem_getvalue(&ftl->status_q.sem, &val);
+		if (val < MAX_STATUS_MESSAGE_QUEUED) {
+			sem_post(&ftl->status_q.sem);
+		}
 #endif
 	}
 
@@ -255,6 +259,7 @@ int dequeue_status_msg(ftl_stream_configuration_private_t *ftl, ftl_status_msg_t
 		free(elmt);
 		ftl->status_q.count--;
 		retval = 0;
+		FTL_LOG(FTL_LOG_ERROR, "ERROR: dequeue_status_msg had SOME messages");
 	}
 	else {
 #ifndef _WIN32

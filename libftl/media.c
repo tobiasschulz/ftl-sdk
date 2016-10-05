@@ -490,6 +490,7 @@ static int _media_send_packet(ftl_stream_configuration_private_t *ftl, ftl_media
 	if (mc->xmit_seq_num == mc->seq_num) {
 		FTL_LOG(FTL_LOG_INFO, "ERROR: No packets in ring buffer (%d == %d)", mc->xmit_seq_num, mc->seq_num);
 	}
+	// else FTL_LOG(FTL_LOG_INFO, "ERROR: There are some packets in ring buffer (%d != %d)", mc->xmit_seq_num, mc->seq_num);
 
 	_lock_mutex(slot->mutex);
 
