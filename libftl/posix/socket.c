@@ -12,6 +12,8 @@
 #endif
 
 #include <unistd.h>
+#include <sys/socket.h>
+#include <errno.h>
 
 void ftl_init_sockets() {
   //BSD sockets are smarter and don't need silly init
@@ -26,19 +28,27 @@ char * ftl_get_socket_error() {
 }
 
 int ftl_set_socket_recv_timeout(int socket, int ms_timeout){
-  struct timeval tv;
-  tv.tv_sec  = ms_timeout / 1000;
-  tv.tv_usec = (ms_timeout % 1000) * 1000;
-  FTL_LOG(FTL_LOG_INFO, "ftl_set_socket_recv_timeout: ms_timeout = %d, tv.tv_sec = %d, tv.tv_usec = %d", ms_timeout, tv.tv_sec, tv.tv_usec);
-	return setsockopt(socket, SOL_SOCKET, SO_RCVTIMEO, &tv, sizeof(struct timeval));  
+  struct timeval tv = {0};
+
+  while (ms_timeout >= 1000) {
+    tv.tv_sec++;
+    ms_timeout -= 1000;
+  }
+  tv.tv_usec = ms_timeout * 1000;
+
+  return setsockopt(socket, SOL_SOCKET, SO_RCVTIMEO, (char*)&tv, sizeof(tv));  
 }
 
 int ftl_set_socket_send_timeout(int socket, int ms_timeout){
-  struct timeval tv;
-  tv.tv_sec  = ms_timeout / 1000;
-  tv.tv_usec = (ms_timeout % 1000) * 1000;
-  FTL_LOG(FTL_LOG_INFO, "ftl_set_socket_recv_timeout: ms_timeout = %d, tv.tv_sec = %d, tv.tv_usec = %d", ms_timeout, tv.tv_sec, tv.tv_usec);
-	return setsockopt(socket, SOL_SOCKET, SO_SNDTIMEO, &tv, sizeof(struct timeval));
+  struct timeval tv = {0};
+
+  while (ms_timeout >= 1000) {
+    tv.tv_sec++;
+    ms_timeout -= 1000;
+  }
+  tv.tv_usec = ms_timeout * 1000;
+
+  return setsockopt(socket, SOL_SOCKET, SO_SNDTIMEO, (char*)&tv, sizeof(tv));
 }
 
 int ftl_set_socket_enable_keepalive(int socket){

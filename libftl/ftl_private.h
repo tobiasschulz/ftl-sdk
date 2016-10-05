@@ -30,28 +30,21 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
+#include "gettimeofday\gettimeofday.h"
 
 #ifdef _WIN32
 #include <WS2tcpip.h>
 #include <WinSock2.h>
-#include "win32\gettimeofday.h"
 #else
 #include <pthread.h>
-#include <semaphore.h>
-#include "posix/gettimeofday.h"
-#endif
-
-#ifndef _WIN32
-#include <errno.h>
 #include <sys/types.h>
 #include <sys/socket.h>
-#include <netdb.h>
 #include <netinet/in.h>
-#include <arpa/inet.h>
+#include <netdb.h>
+#include <stdbool.h>
 #include <unistd.h>
-typedef int BOOL;
-#define TRUE 1
-#define FALSE 0
+#include <arpa/inet.h>
+#include <semaphore.h>
 #endif
 
 #define MAX_INGEST_COMMAND_LEN 512
@@ -84,6 +77,11 @@ typedef enum {
 
 #ifndef _WIN32
 typedef int SOCKET;
+typedef bool BOOL;
+#define TRUE true
+#define FALSE false
+#define INVALID_SOCKET (-1)
+#define SOCKET_ERROR (-1)
 #endif
 
 /*status message queue*/
@@ -103,6 +101,10 @@ typedef struct {
 	sem_t sem;
 #endif
 }status_queue_t;
+
+#ifndef _WIN32
+pthread_mutexattr_t ftl_default_mutexattr;
+#endif
 
 /**
  * This configuration structure handles basic information for a struct such
@@ -253,6 +255,7 @@ typedef enum {
 
 #define FTL_LOG(log_level, ...) ftl_log_message (log_level, __FILE__, __LINE__, __VA_ARGS__);
 void ftl_logging_init(); /* Sets the callback to 0 disabling it */
+void ftl_register_log_handler(ftl_logging_function_t log_func);
 void ftl_log_message(ftl_log_severity_t log_level, const char * file, int lineno, const char * fmt, ...);
 
 /**
@@ -297,7 +300,9 @@ ftl_status_t _ingest_disconnect(ftl_stream_configuration_private_t *stream_confi
 ftl_status_t media_init(ftl_stream_configuration_private_t *ftl);
 ftl_status_t media_destroy(ftl_stream_configuration_private_t *ftl);
 int media_send_video(ftl_stream_configuration_private_t *ftl, uint8_t *data, int32_t len, int end_of_frame);
-ftl_status_t media_send_audio(ftl_stream_configuration_private_t *ftl, uint8_t *data, int32_t len);
+int media_send_audio(ftl_stream_configuration_private_t *ftl, uint8_t *data, int32_t len);
+
+void sleep_ms(int ms);
 
 #if defined(_MSC_VER) && _MSC_VER < 1900
 #define snprintf _snprintf

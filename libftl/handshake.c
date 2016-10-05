@@ -327,13 +327,7 @@ static void *connection_status_thread(void *data)
 
 	while (ftl->connected) {
 
-  	FTL_LOG(FTL_LOG_INFO, "ftl->connected: %d", ftl->connected);
-
-{struct timeval tv;struct timezone tz;struct tm *tm; gettimeofday(&tv,&tz);tm=localtime(&tv.tv_sec); printf("StartTime: %d:%02d:%02d %d \n", tm->tm_hour, tm->tm_min, tm->tm_sec, tv.tv_usec);}
-
-		Sleep(5000*99);
-
-{struct timeval tv;struct timezone tz;struct tm *tm; gettimeofday(&tv,&tz);tm=localtime(&tv.tv_sec); printf("StartTime after sleep: %d:%02d:%02d %d \n", tm->tm_hour, tm->tm_min, tm->tm_sec, tv.tv_usec);}
+		sleep_ms(500);
 
 		int err = recv(ftl->ingest_socket, &buf, sizeof(buf), MSG_PEEK);
 
