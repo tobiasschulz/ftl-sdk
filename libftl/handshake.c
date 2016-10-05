@@ -25,6 +25,7 @@
 #define __FTL_INTERNAL
 #include "ftl.h"
 #include "ftl_private.h"
+#include <sys/time.h>
 #include <stdarg.h>
 
 #ifdef _WIN32
@@ -324,9 +325,13 @@ static void *connection_status_thread(void *data)
 
 	while (ftl->connected) {
 
-  	FTL_LOG(FTL_LOG_INFO, "ftl->connected: %d\n", ftl->connected);
+  	FTL_LOG(FTL_LOG_INFO, "ftl->connected: %d", ftl->connected);
 
-		Sleep(500);
+{struct timeval tv;struct timezone tz;struct tm *tm; gettimeofday(&tv,&tz);tm=localtime(&tv.tv_sec); printf("StartTime: %d:%02d:%02d %d \n", tm->tm_hour, tm->tm_min, tm->tm_sec, tv.tv_usec);}
+
+		Sleep(5000);
+
+{struct timeval tv;struct timezone tz;struct tm *tm; gettimeofday(&tv,&tz);tm=localtime(&tv.tv_sec); printf("StartTime after sleep: %d:%02d:%02d %d \n", tm->tm_hour, tm->tm_min, tm->tm_sec, tv.tv_usec);}
 
 		int err = recv(ftl->ingest_socket, &buf, sizeof(buf), MSG_PEEK);
 

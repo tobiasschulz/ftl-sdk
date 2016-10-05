@@ -488,7 +488,7 @@ static int _media_send_packet(ftl_stream_configuration_private_t *ftl, ftl_media
 	nack_slot_t *slot = mc->nack_slots[mc->xmit_seq_num % NACK_RB_SIZE];
 
 	if (mc->xmit_seq_num == mc->seq_num) {
-		FTL_LOG(FTL_LOG_INFO, "ERROR: No packets in ring buffer (%d == %d)\n", mc->xmit_seq_num, mc->seq_num);
+		FTL_LOG(FTL_LOG_INFO, "ERROR: No packets in ring buffer (%d == %d)", mc->xmit_seq_num, mc->seq_num);
 	}
 
 	_lock_mutex(slot->mutex);
